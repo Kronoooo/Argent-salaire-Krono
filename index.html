@@ -509,7 +509,7 @@
   </div>
 
   <div class="footer-note">
-    © 2026 <a href="http://www.argent-salaire.com">argent-salaire.com</a> · Suce ma bite laura c'est bon ????
+    © 2026 <a href="http://www.argent-salaire.com">argent-salaire.com</a> · Calcul basé sur 365 jours / an, 24h / jour
   </div>
 
 </div>
@@ -561,8 +561,8 @@
     else if (timein === 'weekly') monthly = raw * (52/12);
     else monthly = raw / 12;
 
-    perDay   = monthly / 20.5;
-    perHour  = perDay / 7;
+    perDay   = monthly * 12 / 365;   // 365 jours/an
+    perHour  = perDay / 24;           // 24h/jour
     perMin   = perHour / 60;
     perSec   = perMin / 60;
     perMs    = perSec / 1000;
@@ -618,9 +618,9 @@
 
   function updateEquivalences(hourly) {
     document.getElementById('equivSection').style.display = 'block';
-    const monthly = hourly * 7 * 20.5;         // salaire mensuel
-    const weekly  = monthly * 12 / 52;          // salaire hebdo (52 semaines/an)
-    const yearly  = (monthly / 20.5) * 365;     // salaire journalier x 365 jours
+    const monthly = hourly * 24 * 365 / 12;    // salaire mensuel (base 365j/24h)
+    const weekly  = monthly * 12 / 52;          // salaire hebdo
+    const yearly  = monthly * 12;               // salaire annuel (365j)
 
     document.getElementById('h-coffee').textContent    = Math.floor(hourly / 1.80);
     document.getElementById('h-croissant').textContent = Math.floor(hourly / 1.20);
