@@ -503,7 +503,7 @@
     <div class="equiv-grid" id="grid-an" style="display:none">
       <div class="equiv-card"><span class="equiv-icon">✈️</span><span class="equiv-count" id="a-vol">—</span><div class="equiv-label-text">vols Paris-NYC (~600€)</div></div>
       <div class="equiv-card"><span class="equiv-icon">🚗</span><span class="equiv-count" id="a-voiture">—</span><div class="equiv-label-text">voitures d'occasion (~8000€)</div></div>
-      <div class="equiv-card"><span class="equiv-icon">📱</span><span class="equiv-count" id="a-phone">—</span><div class="equiv-label-text">smartphones haut de gamme (~1100€)</div></div>
+      <div class="equiv-card"><span class="equiv-icon">📱</span><span class="equiv-count" id="a-phone">—</span><div class="equiv-label-text">smartphones (~1100€)</div></div>
       <div class="equiv-card"><span class="equiv-icon">🏖️</span><span class="equiv-count" id="a-vacances">—</span><div class="equiv-label-text">semaines de vacances (~1200€)</div></div>
     </div>
   </div>
@@ -618,26 +618,24 @@
 
   function updateEquivalences(hourly) {
     document.getElementById('equivSection').style.display = 'block';
-    const weekly = hourly * 7 * 5;
-    const yearly = hourly * 7 * 20.5 * 12;
+    const monthly = hourly * 7 * 20.5;         // salaire mensuel
+    const weekly  = monthly * 12 / 52;          // salaire hebdo (52 semaines/an)
+    const yearly  = (monthly / 20.5) * 365;     // salaire journalier x 365 jours
 
-    // Heure
     document.getElementById('h-coffee').textContent    = Math.floor(hourly / 1.80);
     document.getElementById('h-croissant').textContent = Math.floor(hourly / 1.20);
     document.getElementById('h-cinema').textContent    = Math.floor(hourly / 12);
     document.getElementById('h-pizza').textContent     = Math.floor(hourly / 11);
 
-    // Semaine
     document.getElementById('s-courses').textContent = Math.floor(weekly / 80);
     document.getElementById('s-jeu').textContent     = Math.floor(weekly / 60);
     document.getElementById('s-shoes').textContent   = Math.floor(weekly / 90);
     document.getElementById('s-resto').textContent   = Math.floor(weekly / 35);
 
-    // An
-    document.getElementById('a-vol').textContent      = Math.floor(yearly / 600);
-    document.getElementById('a-voiture').textContent  = Math.floor(yearly / 8000);
-    document.getElementById('a-phone').textContent    = Math.floor(yearly / 1100);
-    document.getElementById('a-vacances').textContent = Math.floor(yearly / 1200);
+    document.getElementById('a-vol').textContent     = Math.floor(yearly / 600);
+    document.getElementById('a-voiture').textContent = Math.floor(yearly / 8000);
+    document.getElementById('a-phone').textContent   = Math.floor(yearly / 1100);
+    document.getElementById('a-vacances').textContent= Math.floor(yearly / 1200);
   }
 
   function switchTab(period) {
