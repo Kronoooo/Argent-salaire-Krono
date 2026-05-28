@@ -388,6 +388,20 @@
     margin-top: 3px;
   }
 
+  .equiv-tab {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .equiv-tab:hover { border-color: var(--accent); color: var(--accent); }
+  .equiv-tab.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent2); }
+
   @media (max-width: 600px) {
     .form-row { flex-direction: column; }
     .form-row select { min-width: unset; }
@@ -459,27 +473,38 @@
   </div>
 
   <!-- EQUIVALENCES -->
-  <div class="compare-label" id="equivLabel" style="display:none">Ce que tu gagnes par heure, c'est l'équivalent de…</div>
-  <div class="equiv-grid" id="equivGrid" style="display:none">
-    <div class="equiv-card">
-      <span class="equiv-icon">☕</span>
-      <span class="equiv-count" id="equivCoffee">—</span>
-      <div class="equiv-label-text">cafés (~1,80€)</div>
+  <div id="equivSection" style="display:none">
+    <div class="compare-label">C'est l'équivalent de…</div>
+
+    <!-- Tabs -->
+    <div style="display:flex;gap:8px;justify-content:center;margin-bottom:1rem;">
+      <button class="equiv-tab active" onclick="switchTab('heure')" id="tab-heure">Par heure</button>
+      <button class="equiv-tab" onclick="switchTab('semaine')" id="tab-semaine">Par semaine</button>
+      <button class="equiv-tab" onclick="switchTab('an')" id="tab-an">Par an</button>
     </div>
-    <div class="equiv-card">
-      <span class="equiv-icon">🥐</span>
-      <span class="equiv-count" id="equivCroissant">—</span>
-      <div class="equiv-label-text">croissants (~1,20€)</div>
+
+    <!-- Heure -->
+    <div class="equiv-grid" id="grid-heure">
+      <div class="equiv-card"><span class="equiv-icon">☕</span><span class="equiv-count" id="h-coffee">—</span><div class="equiv-label-text">cafés (~1,80€)</div></div>
+      <div class="equiv-card"><span class="equiv-icon">🥐</span><span class="equiv-count" id="h-croissant">—</span><div class="equiv-label-text">croissants (~1,20€)</div></div>
+      <div class="equiv-card"><span class="equiv-icon">🎬</span><span class="equiv-count" id="h-cinema">—</span><div class="equiv-label-text">places de ciné (~12€)</div></div>
+      <div class="equiv-card"><span class="equiv-icon">🍕</span><span class="equiv-count" id="h-pizza">—</span><div class="equiv-label-text">pizzas (~11€)</div></div>
     </div>
-    <div class="equiv-card">
-      <span class="equiv-icon">🎬</span>
-      <span class="equiv-count" id="equivCinema">—</span>
-      <div class="equiv-label-text">places de ciné (~12€)</div>
+
+    <!-- Semaine -->
+    <div class="equiv-grid" id="grid-semaine" style="display:none">
+      <div class="equiv-card"><span class="equiv-icon">🛒</span><span class="equiv-count" id="s-courses">—</span><div class="equiv-label-text">courses (~80€)</div></div>
+      <div class="equiv-card"><span class="equiv-icon">🎮</span><span class="equiv-count" id="s-jeu">—</span><div class="equiv-label-text">jeux vidéo (~60€)</div></div>
+      <div class="equiv-card"><span class="equiv-icon">👟</span><span class="equiv-count" id="s-shoes">—</span><div class="equiv-label-text">paires de baskets (~90€)</div></div>
+      <div class="equiv-card"><span class="equiv-icon">🍽️</span><span class="equiv-count" id="s-resto">—</span><div class="equiv-label-text">restos (~35€)</div></div>
     </div>
-    <div class="equiv-card">
-      <span class="equiv-icon">🍕</span>
-      <span class="equiv-count" id="equivPizza">—</span>
-      <div class="equiv-label-text">pizzas (~11€)</div>
+
+    <!-- An -->
+    <div class="equiv-grid" id="grid-an" style="display:none">
+      <div class="equiv-card"><span class="equiv-icon">✈️</span><span class="equiv-count" id="a-vol">—</span><div class="equiv-label-text">vols Paris-NYC (~600€)</div></div>
+      <div class="equiv-card"><span class="equiv-icon">🚗</span><span class="equiv-count" id="a-voiture">—</span><div class="equiv-label-text">voitures d'occasion (~8000€)</div></div>
+      <div class="equiv-card"><span class="equiv-icon">📱</span><span class="equiv-count" id="a-phone">—</span><div class="equiv-label-text">smartphones haut de gamme (~1100€)</div></div>
+      <div class="equiv-card"><span class="equiv-icon">🏖️</span><span class="equiv-count" id="a-vacances">—</span><div class="equiv-label-text">semaines de vacances (~1200€)</div></div>
     </div>
   </div>
 
@@ -592,15 +617,34 @@
   }
 
   function updateEquivalences(hourly) {
-    const grid = document.getElementById('equivGrid');
-    const label = document.getElementById('equivLabel');
-    grid.style.display = 'grid';
-    label.style.display = 'block';
+    document.getElementById('equivSection').style.display = 'block';
+    const weekly = hourly * 7 * 5;
+    const yearly = hourly * 7 * 20.5 * 12;
 
-    document.getElementById('equivCoffee').textContent    = Math.floor(hourly / 1.80);
-    document.getElementById('equivCroissant').textContent = Math.floor(hourly / 1.20);
-    document.getElementById('equivCinema').textContent    = Math.floor(hourly / 12);
-    document.getElementById('equivPizza').textContent     = Math.floor(hourly / 11);
+    // Heure
+    document.getElementById('h-coffee').textContent    = Math.floor(hourly / 1.80);
+    document.getElementById('h-croissant').textContent = Math.floor(hourly / 1.20);
+    document.getElementById('h-cinema').textContent    = Math.floor(hourly / 12);
+    document.getElementById('h-pizza').textContent     = Math.floor(hourly / 11);
+
+    // Semaine
+    document.getElementById('s-courses').textContent = Math.floor(weekly / 80);
+    document.getElementById('s-jeu').textContent     = Math.floor(weekly / 60);
+    document.getElementById('s-shoes').textContent   = Math.floor(weekly / 90);
+    document.getElementById('s-resto').textContent   = Math.floor(weekly / 35);
+
+    // An
+    document.getElementById('a-vol').textContent      = Math.floor(yearly / 600);
+    document.getElementById('a-voiture').textContent  = Math.floor(yearly / 8000);
+    document.getElementById('a-phone').textContent    = Math.floor(yearly / 1100);
+    document.getElementById('a-vacances').textContent = Math.floor(yearly / 1200);
+  }
+
+  function switchTab(period) {
+    ['heure','semaine','an'].forEach(p => {
+      document.getElementById('grid-' + p).style.display = p === period ? 'grid' : 'none';
+      document.getElementById('tab-' + p).classList.toggle('active', p === period);
+    });
   }
 
   // Allow Enter key
